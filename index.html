@@ -27,7 +27,7 @@
     }
     .logo { width: 120px; max-width: 30%; height: auto; }
     .linha-horizontal, .linha-horizontal-2, .linha-horizontal-3 {
-      display: flex; gap: 15px; flex-wrap: wrap; margin-top: 5px;
+      display: flex; gap: 10px; flex-wrap: wrap; margin-top: 5px;
     }
     .linha-horizontal label, .linha-horizontal-2 label, .linha-horizontal-3 label {
       flex: 1; min-width: 180px;
@@ -38,7 +38,7 @@
       color: blue; border-radius: 4px;
     }
     textarea {
-      height: auto; min-height: 80px; color: blue; font-family: Arial, sans-serif; font-size: 14px;
+      height: auto; min-height: 160px; color: blue; font-family: Arial, sans-serif; font-size: 14px;
     }
     .btn {
       margin-top: 10px; padding: 10px 15px; font-weight: bold; font-size: 18px;
@@ -47,7 +47,7 @@
     }
     .botao {
       color: #15400e; padding: 10px 15px; text-align: center; display: inline-block;
-      font-size: 18px; cursor: pointer; border-radius: 10px; width: 100%; background-color: #D6FFFF;
+      font-size: 16px; cursor: pointer; border-radius: 10px; width: 100%; background-color: #D6FFFF;
     }
     .btn:not(:last-child) { margin-bottom: 10px; }
     p {
@@ -56,23 +56,20 @@
     #pdf-content { background-color: #D6FFFF; padding: 15px 10px; border-radius: 4px; }
     canvas#assinatura { border: 1px solid #000; }
     .neumann { font-size: 8px; color: black; text-align: right; margin-bottom: 15px; }
-    .equipe { margin-top: 5px; background-color: #dbead5; padding: 5px 3px; border-radius: 4px; color: #132c0d; }
+    .equipe { margin-top: 3px; background-color: #dbead5; padding: 5px 3px; border-radius: 4px; color: #132c0d; }
   </style>
 </head>
-
 <body>
-
+<label for="nome" style="font-size: 7px;">© 2025 Leonildo.Neumann</label>
 <div id="pdf-content">
-<label for="nome" style="font-size: 5px;">© 2025 Leonildo.Neumann</label>
   <div class="logo-container">
     <img src="logo-prefeitura.png" crossorigin="anonymous" alt="Prefeitura" class="logo">
     <label for="nome" style="font-size: 26px;">SETRAN</label>
     <img src="logo-setran.png" crossorigin="anonymous" alt="Setran" class="logo">
   </div>
-  <h1><u>RELATÓRIO DE ATENDIMENTO DE OCORRÊNCIA</u></h1>
+  <h1><u>RELATÓRIO DE ATENDIMENTO DE TEXTE</u></h1>
 
   <label>1 - NÚMERO: <input type="text" name="numero" style="width: 70px;"> /2025</label>
-
   <div class="linha-horizontal">
     <label>Data: <input type="date" name="data"></label>
     <label>Hora Início: <input type="time" name="hora_inicio"></label>
@@ -100,11 +97,12 @@
       <label>Nome Agente 4: <input type="text" name="assinatura4"></label>
     </div>
     <label>VTR(s): <input type="text" name="vtr"></label>
-  </div>
+   </div> 
   <div class="assinatura">
     <label>Assinaturas (Agentes 1, 2, 3 e 4):</label>
-    <canvas id="assinatura" width="690" height="160"></canvas><br>
-  </div> 
+    <canvas id="assinatura" width="690" height="170"></canvas><br>
+  </div>
+
   <p><strong>OBS:</strong> Este documento é uma coleta preliminar de dados, para controle de atendimentos de ACIDENTES/OCORRÊNCIA da SETRAN, e não substitui o registro realizado por outros órgãos.</p>
 
   <div class="neumann">
@@ -171,11 +169,16 @@ function prepararAssinatura(clone) {
   }
 }
 
-function gerarNomePDFComDataHora() {
+function getNumeroRelatorio() {
+  const numero = document.querySelector('input[name="numero"]').value.trim();
   const agora = new Date();
   const data = agora.toLocaleDateString('pt-BR').split('/').reverse().join('-');
   const hora = agora.toTimeString().split(' ')[0].replace(/:/g, '-');
-  return `relatorio_${data}_${hora}.pdf`;
+if (numero) {
+  return `relatorio_${numero}_${data}_${hora}.pdf`;
+} else {
+return `relatorio_${data}_${hora}.pdf`; // nome padrão caso esteja vazio
+  }
 }
 
 function gerarPDF() {
@@ -204,7 +207,7 @@ function gerarPDF() {
   
   const opt = {
     margin: [5, 5, 5, 5],
-    filename: gerarNomePDFComDataHora(),
+    filename: getNumeroRelatorio(),
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: { 
       scale: 3,
@@ -250,7 +253,7 @@ async function compartilharPDF() {
 
   const opt = {
     margin: [5, 5, 5, 5],
-    filename: gerarNomePDFComDataHora(),
+    filename: getNumeroRelatorio(),
     image: { type: 'jpeg', quality: 0.98 },
     html2canvas: { 
       scale: 3,
@@ -265,7 +268,7 @@ async function compartilharPDF() {
 
   const blob = await html2pdf().set(opt).from(clone).outputPdf('blob');
 
-  const file = new File([blob], gerarNomePDFComDataHora(), { type: 'application/pdf' });
+  const file = new File([blob], getNumeroRelatorio(), { type: 'application/pdf' });
 
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
     try {
