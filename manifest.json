@@ -1,7 +1,7 @@
 
 {
   "name": "Relatório de Ocorrência Texte",
-  "short_name": "Ocorrência",
+  "short_name": "Texte",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
