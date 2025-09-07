@@ -4,14 +4,12 @@
   <meta charset="UTF-8">
   <title>Relatório de Atendimento de Ocorrência</title>
   <link rel="manifest" href="manifest.json">
-<link rel="icon" href="icon-192.png">
+  <link rel="icon" href="icon-192.png">
   <meta name="theme-color" content="#ffffff">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       font-family: Arial, sans-serif;
       padding: 15px;
@@ -19,184 +17,130 @@
       font-weight: bold;
       max-width: 900px;
       margin: auto;
-      color: black;
-      background-color: #20B2AA;
+      color: #15400e;
+      background-color: #0088FF;
     }
-    h1 {
-      text-align: center;
-      font-size: 19px;
-      margin-top: 2px;
-      color: blue;
-    }
-    h2 {
-      text-align: center;
-      font-size: 16px;
-      margin-top: 1px;
-      color: green;
-    }
-
+    h1 { text-align: center; font-size: 22px; margin-top: 1px; color: blue; }
     .logo-container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 10px;
-      background-color: #FFFFFF;
-      border-radius: 4px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+      gap: 10px; margin-bottom: 10px; background-color: #FFFFFF; border-radius: 4px;
     }
-    .logo {
-      width: 120px;
-      max-width: 30%;
-      height: auto;
+    .logo { width: 120px; max-width: 30%; height: auto; }
+    .linha-horizontal, .linha-horizontal-2, .linha-horizontal-3 {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-top: 2px;
     }
-    .linha-horizontal,
-    .linha-horizontal-2,
-    .linha-horizontal-3 {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 3px;
+    .linha-horizontal label, .linha-horizontal-2 label, .linha-horizontal-3 label {
+      flex: 1; min-width: 180px;
     }
-    .linha-horizontal label,
-    .linha-horizontal-2 label,
-    .linha-horizontal-3 label {
-      flex: 1;
-      min-width: 180px;
-    }
-    label {
-      display: block;
-      margin-top: 8px;
-    }
-    input[type="text"],
-    input[type="date"],
-    input[type="time"],
-    textarea {
-      width: 100%;
-      padding: 5px;
-      font-weight: bold;
-      font-size: 14px;
-      color: blue;
-      border-radius: 4px;
+    label { display: block; margin-top: 7px; }
+    input[type="text"], input[type="date"], input[type="time"], textarea, select {
+      width: 100%; padding: 5px; font-weight: bold; font-size: 15px;
+      color: blue; border-radius: 4px;
     }
     textarea {
-      height: auto;
-      min-height: 180px;
-      color: blue;
-      font-family: Arial, sans-serif;
-      font-size: 14px;
+      height: auto; min-height: 180px; color: blue; font-family: Arial, sans-serif; font-size: 14px;
     }
     .btn {
-      margin-top: 10px;
-      padding: 10px 15px;
-      font-weight: bold;
-      font-size: 18px;
-      background-color: #dbead5;
-      color: blue;
-      border-radius: 10px;
-      cursor: pointer;
-      width: 100%;
+      margin-top: 10px; padding: 10px 15px; font-weight: bold; font-size: 18px;
+      background-color: #D6FFFF; color: blue; border-radius: 10px;
+      cursor: pointer; width: 100%;
     }
     .botao {
-      color: yellow;
-      padding: 10px 15px;
-      text-align: center;
-      display: inline-block;
-      font-size: 15px;
-      cursor: pointer;
-      border-radius: 10px; /* Bordas arredondadas */
-      width: 100%;
+      color: blue; padding: 10px 15px; text-align: center; display: inline-block;
+      font-size: 16px; cursor: pointer; border-radius: 10px; width: 100%; background-color: #D6FFFF;
     }
-    .btn:not(:last-child) {
-      margin-bottom: 10px;
-    }
+    .btn:not(:last-child) { margin-bottom: 10px; }
     p {
-      color: red;
-      margin-top: 2px;
-      font-size: 12px;
-      text-align: center;
-      background-color: yellow;
-      padding: 2px;
+      color: red; margin-top: 1px; font-size: 12px; text-align: center; background-color: yellow; padding: 2px;
     }
-    #pdf-content {
-      background-color: #dbead5;
-      padding: 14px 10px;
-      border-radius: 4px;
-    }
-    canvas#assinatura {
-      border: 1px solid #000;
-    }
-    .neumann {
-      font-size: 9px;
-      color: black;
-      text-align: right;
-      margin-bottom: 15px;
-    }
-    .equipe {
-      margin-top: 3px;
-      background-color: lightblue;
-      padding: 5px 3px;
-      border-radius: 4px;
-      
-    }
-
+    #pdf-content { background-color: #D6FFFF; padding: 15px 10px; border-radius: 4px; }
+    canvas#assinatura { border: 1px solid #000; }
+    .neumann { font-size: 8px; color: black; text-align: right; margin-bottom: 15px; }
+    .equipe { margin-top: 3px; background-color: #dbead5; padding: 5px 3px; border-radius: 4px; color: #132c0d; }
+    .digital { margin-top: 3px; padding: 10px 15px; font-weight: bold; font-size: 18px;
+      background-color: #D6FFFF; color: blue; border-radius: 10px;
+      cursor: pointer; width: 100%; }
   </style>
 </head>
 <body>
-<label for="nome" style="font-size: 6px;">© 2025 Leonildo.Neumann</label>
-  <div id="pdf-content">
-<div class="logo-container">
-  <img src="logo-prefeitura.png" crossorigin="anonymous" alt="Prefeitura" class="logo">
-  <img src="logo-setran.png" crossorigin="anonymous" alt="Setran" class="logo">
-  <img src="logo-guarda.png" crossorigin="anonymous" alt="Guarda" class="logo">
-</div>
-  <h1><u>GUARDA PATRIMONIAL</u></h1>
-  <h2>RELATÓRIO DE ATENDIMENTO DE OCORRÊNCIA</h2>
+<label for="nome" style="font-size: 8px; color:yellow;">© 2025 Leonildo.Neumann</label>
+<div id="pdf-content">
+  <div class="logo-container">
+    <img src="logo-prefeitura.png" crossorigin="anonymous" alt="Prefeitura" class="logo">
+    <label for="nome" style="font-size: 26px;">SETRAN</label>
+    <img src="logo-setran.png" crossorigin="anonymous" alt="Setran" class="logo">
+  </div>
+  <h1><u>RELATÓRIO DE ATENDIMENTO DE OCORRÊNCIA</u></h1>
 
-  <label>1 - NÚMERO: <input type="text" name="numero" style="width: 70px;"> ANO: <input type="text" name="ano" style="width: 50px;"></label>
+  <label style="text-align: center">1 - NÚMERO: 
+    <input type="text" name="numero" style="width: 70px;"> 
+    ANO: <input type="text" name="ano" style="width: 50px;"></label> 
+    <label>Tipo de Atendimento:
+    <select name="tipo" style="width: 250px;">
+      <option>Selecione</option>
+      <option>Abalroamento transversal</option>
+      <option>Abalroamento lateral</option>
+      <option>Colisão traseira</option>
+      <option>Colisão frontal</option>
+      <option>Capotamento</option>
+      <option>Tombamento</option>
+      <option>Choque</option>
+      <option>Atropelamento</option>
+      <option>Complexo</option>
+    </select>
+  </label>
 
   <div class="linha-horizontal">
-    <label>DATA: <input type="date" name="data"></label>
-    <label>HORA INÍCIO: <input type="time" name="hora_inicio"></label>
-    <label>HORA TÉRMINO: <input type="time" name="hora_termino"></label>
+    <label>Data: <input type="date" name="data"></label>
+    <label>Hora Início: <input type="time" name="hora_inicio"></label>
+    <label>Hora Término: <input type="time" name="hora_termino"></label>
   </div>
   <div class="linha-horizontal">
-  <label>2 - SOLICITANTE: <input type="text" name="solicitante"></label>
-  <label>NÚMERO DO TELEFONE: <input type="text" name="telefone"></label>
+    <label>2 - SOLICITANTE: <input type="text" name="solicitante"></label>
+    <label>NÚMERO DO TELEFONE: <input type="text" name="telefone"></label>
   </div>
   <label>LOCAL DA OCORRÊNCIA: <input type="text" name="local"></label>
-  <label>SITUAÇÃO INFORMADA: <textarea name="situacao"></textarea></label>
-
+  <label>SITUAÇÃO INFORMADA: <textarea style="min-height: 90px;"></textarea></label>
   <label>3 - RELATÓRIO DO ATENDIMENTO E AÇÕES REALIZADAS: <textarea name="relatorio"></textarea></label>
-  <label>- NÚMERO DE PESSOAS ATENDIDAS: <input type="text" name="pessoas_atendidas"></label>
+  <label>- Autos de infração lavrados: <input type="text" name="autos"></label>
+  <label>- Número de pessoas atendidas: <input type="text" name="pessoas_atendidas"></label>
+  <label>- Veículos recolhidos: <input type="text" name="veiculos"></label>
 
- <div class="equipe"> 
-  <label>4 - EQUIPE:</label>
-  <div class="linha-horizontal-2">
-    <label>Agente 1 (Responsável pelo preenchimento): <input type="text" name="responsavel"></label>
-    <label>Nome Agente 2: <input type="text" name="assinatura2"></label>
+  <div class="equipe">
+    <label>4 - EQUIPE:</label>
+    <div class="linha-horizontal-2">
+      <label>Agente 1 (Responsável pelo preenchimento): <input type="text" name="responsavel"></label>
+      <label>Nome Agente 2: <input type="text" name="assinatura2"></label>
+    </div>
+    <div class="linha-horizontal-3">
+      <label>Nome Agente 3: <input type="text" name="assinatura3"></label>
+      <label>Nome Agente 4: <input type="text" name="assinatura4"></label>
+    </div>
+    <label>VTR(s): <input type="text" name="vtr"></label>
+   </div> 
+  <div class="assinatura">
+    <label>Assinaturas (Agentes 1, 2, 3 e 4):</label>
+    <canvas id="assinatura" width="690" height="170"></canvas><br>
   </div>
-  <div class="linha-horizontal-3">
-    <label>Nome Agente 3: <input type="text" name="assinatura3"></label>
-    <label>Nome Agente 4: <input type="text" name="assinatura4"></label>
-  </div>
-  <label>VTR(s): <input type="text" name="vtr"></label>
- </div>
-<div class="assinatura">    
-<label>ASSINATURAS (Agentes 1, 2, 3 e 4):</label>
-<canvas id="assinatura" width="690" height="170" style="border:1px solid #000;"></canvas><br>
-</div>
-  <p><strong>OBS:</strong> Este documento é uma coleta preliminar de dados, para controle de atendimentos de OCORRÊNCIA da GUARDA PATRIMONIAL, e não substitui o registro realizado por outros órgãos.</p>
+
+  <p><strong>OBS:</strong> Este documento é uma coleta preliminar de dados, para controle de atendimentos de ACIDENTES/OCORRÊNCIA da SETRAN, e não substitui o registro realizado por outros órgãos.</p>
 
   <div class="neumann">
-   <div style="position: relative;">
-   <label for="meuInput" style="position: absolute; right: 0;">© 2025 Leonildo.Neumann</label>
+    <div style="position: relative;">
+      <label style="position: absolute; right: 0;">© 2025 Leonildo.Neumann</label>
+    </div>
   </div>
 </div>
+
+<button class="btn" onclick="limparAssinatura()">Limpar Assinatura</button>
+<button class="btn" onclick="compartilharPDF()">Compartilhar PDF</button>
+<button class="btn" onclick="gerarPDF()">Baixar PDF</button>
+<div class="digital">
+<a href="https://www.ctbdigital.com.br/">
+<img src=https://2b04290231.cbaul-cdnwnd.com/2d5a2f4cd029962311c16a1a0d01bbc2/200000323-f2bd5f2bd7/700/ctb%20digital-mini.webp?ph=2b04290231 style="width: 200px; height: 100px; margin: 0 auto; display: block;">
+</a>
 </div>
-<button type="button" class="btn" onclick="limparAssinatura()">Limpar Assinatura</button>
-<button type="button" class="btn" onclick="compartilharPDF()">Compartilhar PDF</button>
-<button type="button" class="btn" onclick="gerarPDF()">Baixar PDF</button>
+
 
 <script>
 const canvas = document.getElementById('assinatura');
@@ -250,23 +194,12 @@ function prepararAssinatura(clone) {
   }
 }
 
-function getNumeroRelatorio() {
-  const numero = document.querySelector('input[name="numero"]').value.trim();
-  const agora = new Date();
-  const data = agora.toLocaleDateString('pt-BR').split('/').reverse().join('-');
-  const hora = agora.toTimeString().split(' ')[0].replace(/:/g, '-');
-if (numero) {
-  return `relatorio_${numero}_${data}_${hora}.pdf`;
-} else {
-return `relatorio_${data}_${hora}.pdf`; // nome padrão caso esteja vazio
-  }
-}
-
-function gerarPDF() {
-  const original = document.getElementById('pdf-content');
-  const clone = original.cloneNode(true);
-  const textareas = clone.querySelectorAll('textarea');
-  textareas.forEach(textarea => {
+// 🔹 NOVO: converte textarea e select do clone pegando valores do original
+function prepararCampos(clone) {
+  // Textareas
+  const origTextareas = document.querySelectorAll('textarea');
+  const cloneTextareas = clone.querySelectorAll('textarea');
+  cloneTextareas.forEach((textarea, i) => {
     const div = document.createElement('div');
     div.style.whiteSpace = 'pre-wrap';
     div.style.border = '1px solid #ccc';
@@ -276,10 +209,52 @@ function gerarPDF() {
     div.style.fontSize = '14px';
     div.style.backgroundColor = 'white';
     div.style.color = 'blue';
-    div.textContent = textarea.value;
+    div.textContent = origTextareas[i].value;
     textarea.parentNode.replaceChild(div, textarea);
   });
+
+  // Selects
+  const origSelects = document.querySelectorAll('select');
+  const cloneSelects = clone.querySelectorAll('select');
+  cloneSelects.forEach((select, i) => {
+    const div = document.createElement('div');
+    div.style.border = '1px solid #ccc';
+    div.style.padding = '5px';
+    div.style.minHeight = '30px';
+    div.style.fontWeight = 'bold';
+    div.style.fontSize = '14px';
+    div.style.backgroundColor = 'white';
+    div.style.color = 'blue';
+
+    let texto = '';
+    if (origSelects[i].selectedIndex >= 0) {
+      texto = origSelects[i].options[origSelects[i].selectedIndex].textContent.trim();
+    }
+    div.textContent = texto || 'Não selecionado';
+    select.parentNode.replaceChild(div, select);
+  });
+}
+
+function getNumeroRelatorio() {
+  const tipo = document.querySelector('select[name="tipo"]').value.trim();
+  const numero = document.querySelector('input[name="numero"]').value.trim();
+  const agora = new Date();
+  const data = agora.toLocaleDateString('pt-BR').split('/').reverse().join('-');
+  const hora = agora.toTimeString().split(' ')[0].replace(/:/g, '-');
+  if (numero) {
+    return `${numero}_${tipo}_${data}_${hora}.pdf`;
+  } else {
+    return `relatorio_${data}_${hora}.pdf`;
+  }
+}
+
+function gerarPDF() {
+  const original = document.getElementById('pdf-content');
+  const clone = original.cloneNode(true);
+
+  prepararCampos(clone);
   prepararAssinatura(clone);
+
   const container = document.createElement('div');
   container.style.position = 'absolute';
   container.style.left = '-9999px';
@@ -297,10 +272,9 @@ function gerarPDF() {
       windowWidth: document.documentElement.scrollWidth,
       windowHeight: document.documentElement.scrollHeight
     },
-pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
-    
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },    
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };  
+  };
   html2pdf().set(opt).from(clone).save().then(() => {
     document.body.removeChild(container);
   });
@@ -310,21 +284,7 @@ async function compartilharPDF() {
   const original = document.getElementById('pdf-content');
   const clone = original.cloneNode(true);
 
-  const textareas = clone.querySelectorAll('textarea');
-  textareas.forEach(textarea => {
-    const div = document.createElement('div');
-    div.style.whiteSpace = 'pre-wrap';
-    div.style.border = '1px solid #ccc';
-    div.style.padding = '5px';
-    div.style.minHeight = '80px';
-    div.style.fontWeight = 'bold';
-    div.style.fontSize = '14px';
-    div.style.backgroundColor = 'white';
-    div.style.color = 'blue';
-    div.textContent = textarea.value;
-    textarea.parentNode.replaceChild(div, textarea);
-  });
-
+  prepararCampos(clone);
   prepararAssinatura(clone);
 
   const container = document.createElement('div');
@@ -349,7 +309,6 @@ async function compartilharPDF() {
   };
 
   const blob = await html2pdf().set(opt).from(clone).outputPdf('blob');
-
   const file = new File([blob], getNumeroRelatorio(), { type: 'application/pdf' });
 
   if (navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -377,6 +336,8 @@ if ('serviceWorker' in navigator) {
 </script>
 </body>
 </html>
+
+
 
 
 
