@@ -60,6 +60,24 @@
     .digital { margin-top: 3px; padding: 10px 15px; font-weight: bold; font-size: 18px;
       background-color: #D6FFFF; color: blue; border-radius: 10px;
       cursor: pointer; width: 100%; }
+    /* 🔹 Ajustes para fotos */
+    #fotos-container {
+      margin-top: 10px;
+    }
+    .foto-box {
+      margin-bottom: 10px;
+      page-break-inside: avoid; /* evita cortar foto no meio */
+      break-inside: avoid;
+      text-align: center;
+    }
+    .foto-box img {
+      max-width: 100%;
+      max-height: 400px; /* garante que caiba em uma página A4 */
+      object-fit: contain;
+      border: 1px solid #000;
+      border-radius: 5px;
+    }
+
   </style>
 </head>
 <body>
@@ -75,7 +93,7 @@
   <label style="text-align: center">1 - NÚMERO: 
     <input type="text" name="numero" style="width: 70px;"> 
     ANO: <input type="text" name="ano" style="width: 50px;"></label> 
-    <label>Tipo de Atendimento:
+    <label style="margin-top: 2px">Tipo de Atendimento:
     <select name="tipo" style="width: 250px;">
       <option>Selecione</option>
       <option>Abalroamento transversal</option>
@@ -117,7 +135,14 @@
       <label>Nome Agente 4: <input type="text" name="assinatura4"></label>
     </div>
     <label>VTR(s): <input type="text" name="vtr"></label>
-   </div> 
+   </div>
+  <!-- 🔹 Seção para fotos -->
+  
+  <input type="file" id="fotoInput" accept="image/*" multiple style="display:none">
+  <div id="fotos-container">
+    <label>Fotos do Local:</label><br>
+  </div>
+
   <div class="assinatura">
     <label>Assinaturas (Agentes 1, 2, 3 e 4):</label>
     <canvas id="assinatura" width="690" height="170"></canvas><br>
@@ -133,6 +158,7 @@
 </div>
 
 <button class="btn" onclick="limparAssinatura()">Limpar Assinatura</button>
+<button class="btn" onclick="document.getElementById('fotoInput').click()">Tirar Foto</button>
 <button class="btn" onclick="compartilharPDF()">Compartilhar PDF</button>
 <button class="btn" onclick="gerarPDF()">Baixar PDF</button>
 <div class="digital">
@@ -327,6 +353,26 @@ async function compartilharPDF() {
 
   document.body.removeChild(container);
 }
+  /* 🔹 Script para fotos (até 3) */
+const fotoInput = document.getElementById('fotoInput');
+const fotosContainer = document.getElementById('fotos-container');
+
+fotoInput.addEventListener('change', (event) => {
+  fotosContainer.innerHTML = '<label>Fotos do Local:</label><br>'; // limpa antes
+  const files = Array.from(event.target.files);
+
+  files.slice(0,3).forEach((file, index) => { // até 3 fotos
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const div = document.createElement('div');
+      div.classList.add('foto-box');
+      div.innerHTML = `<p>Foto ${index + 1}</p><img src="${e.target.result}">`;
+      fotosContainer.appendChild(div);
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js')
@@ -336,6 +382,7 @@ if ('serviceWorker' in navigator) {
 </script>
 </body>
 </html>
+
 
 
 
