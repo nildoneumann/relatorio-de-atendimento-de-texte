@@ -6,8 +6,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body { font-family: Arial, sans-serif; margin: 15px; background: lightblue; }
-    h1 { text-align: center; color: darkgreen; }
-    #search { width: 95%; padding: 10px; margin-bottom: 20px; font-size: 16px; border-radius: 8px; }
+
+    header {
+      position: sticky; /* cola no topo */
+      top: 0;
+      background: blue; 
+      padding: 10px 0;
+      z-index: 1000; /* fica sobre o conteúdo */
+      border-radius: 8px;
+    }
+
+    h1 { 
+      text-align: center; 
+      color: #fff; 
+      margin: 3 0 10px 0;
+    }
+
+    #search { 
+      width: 95%; 
+      padding: 10px; 
+      margin: 0 auto 10px auto; 
+      display: block;
+      font-size: 16px; 
+      border-radius: 8px; 
+      border: 1px solid #ccc;
+      font-weight: bold;
+    }
+
     ul { list-style: none; padding: 0; }
     li { background: #fff; margin: 5px 0; padding: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
     a { text-decoration: none; color: #0056b3; font-weight: bold; }
@@ -18,10 +43,16 @@
   </style>
 </head>
 <body>
-<label for="nome" style="font-size: 11px;" "color: blue;">© 2025 Leonildo.Neumann</label>
-  <h1>Capítulo XV - Das Infrações (CTB)</h1>
-  <input type="text" id="search" placeholder="🔎 Buscar por artigo ou palavra-chave...">
+  
+
+  <header>
+    <label for="nome" style="font-size: 11px; color: yellow; margin-left: 8px;">© 2025 Leonildo.Neumann</label>
+    <h1>Capítulo XV - Das Infrações (CTB)</h1>
+    <input type="text" id="search" placeholder="🔎 Buscar por artigo ou palavra-chave...">
+  </header>
+
   <ul id="lista-artigos">
+    <!-- seus <li> artigos continuam iguais -->
 <li><span class="artigo">Art. 161</span> – Constitui infração de trânsito a inobservância de qualquer preceito deste Código ou da legislação complementar. <a href="https://www.ctbdigital.com.br/artigo/art161" target="_blank">Ver no CTB Digital</a></li>
 <li><span class="artigo">Art. 162</span> – Dirigir veículo: sem possuir CNH PPD ou ACC, cassada, suspensa,ou de categoria diferente, CNH vencida há mais de 30 dias, sem usar lentes corretoras de visão, aparelho auxiliar de audição, de prótese física ou as adaptações, sem possuir os cursos especializados. <a href="https://www.ctbdigital.com.br/artigo/art162" target="_blank">Ver no CTB Digital</a></li>
 <li><span class="artigo">Art. 163</span> – Entregar a direção do veículo a pessoa nas condições previstas no art. 162. <a href="https://www.ctbdigital.com.br/artigo/art163" target="_blank">Ver no CTB Digital</a></li>
@@ -129,11 +160,12 @@
       <label style="position: absolute; right: 0;">© 2025 Leonildo.Neumann (fonte: www.ctbdigital.com.br)</label>
     </div>
 </div>
-
   </ul>
+
   <footer>
     ⚠️ Observação: Alguns artigos como o <b>Art. 253-A</b> estão incluídos na mesma página que o Art. 253 no CTB Digital.
   </footer>
+
   <script>
     const searchInput = document.getElementById('search');
     const lista = document.querySelectorAll('#lista-artigos li');
