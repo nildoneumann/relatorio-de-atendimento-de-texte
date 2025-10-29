@@ -330,16 +330,24 @@ fotoInput.addEventListener('change', (event) => {
   fotosContainer.innerHTML = '<label>Fotos do Local:</label><br>'; // limpa antes
   const files = Array.from(event.target.files);
 
-  files.slice(0,3).forEach((file, index) => { // até 3 fotos
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const div = document.createElement('div');
-      div.classList.add('foto-box');
-      div.innerHTML = `<p>Foto ${index + 1}</p><img src="${e.target.result}">`;
-      fotosContainer.appendChild(div);
-    };
-    reader.readAsDataURL(file);
-  });
+ files.slice(0,3).forEach((file, index) => {
+  const div = document.createElement('div');
+  div.classList.add('foto-box');
+  
+  const img = document.createElement('img');
+  img.src = URL.createObjectURL(file); // ✅ mais seguro e compatível com PWA
+  img.onload = () => {
+    URL.revokeObjectURL(img.src); // libera memória após carregar
+  };
+
+  const p = document.createElement('p');
+  p.textContent = `Foto ${index + 1}`;
+
+  div.appendChild(p);
+  div.appendChild(img);
+  fotosContainer.appendChild(div);
+});
+
 });
 
 
@@ -351,6 +359,7 @@ if ('serviceWorker' in navigator) {
 </script>
 </body>
 </html>
+
 
 
 
