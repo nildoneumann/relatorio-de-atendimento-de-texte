@@ -422,11 +422,18 @@ function preencherEndereco() {
     }
   );
 }
-
+// 🔹 Tenta preencher automaticamente ao abrir o formulário
+window.addEventListener('load', () => {
+  // pequeno atraso para evitar bloqueio em mobile
+  setTimeout(() => {
+    preencherEndereco();
+  }, 800);
+});
 
 </script>
 </body>
 </html>
+
 
 
 
