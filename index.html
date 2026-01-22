@@ -365,8 +365,14 @@ if ('serviceWorker' in navigator) {
     .catch(error => console.log('Erro ao registrar o Service Worker:', error));
 }
   // 🔹 Preenchimento automático do endereço via GPS (OpenStreetMap)
+  self.addEventListener('fetch', (event) => {
+  if (event.request.url.includes('nominatim.openstreetmap.org')) {
+    event.respondWith(fetch(event.request));
+  }
+});
+
 function preencherEndereco() {
-  if (!navigator.geolocation) {
+  if (!('geolocation' in navigator)) {
     alert("Geolocalização não suportada neste dispositivo.");
     return;
   }
@@ -378,45 +384,51 @@ function preencherEndereco() {
 
       try {
         const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`,
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,
           {
             headers: {
-              'Accept-Language': 'pt-BR'
+              'Accept-Language': 'pt-BR',
+              'User-Agent': 'RelatorioOcorrencia/1.0'
             }
           }
         );
 
+        if (!response.ok) throw new Error('Erro HTTP');
+
         const data = await response.json();
 
         const endereco = [
-          data.address.road || '',
-          data.address.house_number || '',
-          data.address.suburb || '',
-          data.address.city || data.address.town || '',
-          data.address.state || ''
+          data.address.road,
+          data.address.house_number,
+          data.address.suburb,
+          data.address.city || data.address.town,
+          data.address.state
         ].filter(Boolean).join(' - ');
 
         document.getElementById('local').value =
-          endereco || 'Endereço não identificado automaticamente';
+          endereco || 'Localização obtida, edite se necessário';
 
-      } catch (error) {
-        alert("Erro ao converter localização em endereço.");
+      } catch (e) {
+        document.getElementById('local').value =
+          `Lat: ${lat.toFixed(6)}, Lon: ${lon.toFixed(6)} (edite manualmente)`;
       }
     },
     (error) => {
-      alert("Permissão de localização negada ou indisponível.");
+      alert("Não foi possível obter a localização. Verifique GPS e permissões.");
     },
     {
       enableHighAccuracy: true,
-      timeout: 10000,
+      timeout: 15000,
       maximumAge: 0
     }
   );
 }
 
+
 </script>
 </body>
 </html>
+
 
 
 
