@@ -102,13 +102,12 @@
     <label>NÚMERO DO TELEFONE: <input type="text" name="telefone"></label>
   </div>
   <label>
-  LOCAL DA OCORRÊNCIA:
-  <input type="text" name="local" id="local" placeholder="Clique em 📍 para preencher automaticamente">
-  <button type="button"
+  LOCAL DA OCORRÊNCIA: <button type="button"
           onclick="preencherEndereco()"
           style="margin-top:3px; padding:1px; font-weight:bold; font-size: 11px">
     📍 Usar localização atual
   </button>
+  <input type="text" name="local" id="local" placeholder="Clique em 📍 para preencher automaticamente"> 
 </label>
   <label>SITUAÇÃO INFORMADA: <textarea style="min-height: 90px;"></textarea></label>
   <label>3 - RELATÓRIO DO ATENDIMENTO E AÇÕES REALIZADAS: <textarea name="relatorio"></textarea></label>
@@ -428,6 +427,7 @@ function preencherEndereco() {
 </script>
 </body>
 </html>
+
 
 
 
