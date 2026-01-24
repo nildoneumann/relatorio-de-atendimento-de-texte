@@ -430,9 +430,42 @@ window.addEventListener('load', () => {
   }, 800);
 });
 
+  // 🔹 Preenchimento automático de ANO e DATA
+document.addEventListener('DOMContentLoaded', () => {
+  const hoje = new Date();
+
+  // 🔹 Campo ANO
+  const campoAno = document.querySelector('input[name="ano"]');
+  if (campoAno && !campoAno.value) {
+    campoAno.value = hoje.getFullYear();
+  }
+
+  // 🔹 Campo DATA (formato yyyy-mm-dd)
+  const campoData = document.querySelector('input[name="data"]');
+  if (campoData && !campoData.value) {
+    const yyyy = hoje.getFullYear();
+    const mm = String(hoje.getMonth() + 1).padStart(2, '0');
+    const dd = String(hoje.getDate()).padStart(2, '0');
+    campoData.value = `${yyyy}-${mm}-${dd}`;
+  }
+});
+
+// 🔹 Preenchimento automático da HORA INÍCIO
+document.addEventListener('DOMContentLoaded', () => {
+  const campoHoraInicio = document.querySelector('input[name="hora_inicio"]');
+
+  if (campoHoraInicio && !campoHoraInicio.value) {
+    const agora = new Date();
+    const hh = String(agora.getHours()).padStart(2, '0');
+    const mm = String(agora.getMinutes()).padStart(2, '0');
+    campoHoraInicio.value = `${hh}:${mm}`;
+  }
+});
+
 </script>
 </body>
 </html>
+
 
 
 
