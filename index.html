@@ -327,11 +327,6 @@ if ('serviceWorker' in navigator) {
 }
 
 // 🔹 Preenchimento automático do endereço via GPS (OpenStreetMap)
-  self.addEventListener('fetch', (event) => {
-  if (event.request.url.includes('nominatim.openstreetmap.org')) {
-    event.respondWith(fetch(event.request));
-  }
-});
 
 function preencherEndereco() {
   if (!('geolocation' in navigator)) {
@@ -497,6 +492,7 @@ async function compartilharFotos() {
 }</script>
 </body>
 </html>
+
 
 
 
