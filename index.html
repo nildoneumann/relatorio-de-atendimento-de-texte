@@ -124,14 +124,14 @@
   </div>
 </div>
 <div style="background-color: #dbead5; margin-top: 2px; padding: 0px 15px 6px 15px; border-radius: 4px;">
-<label>📸 Fotos da Ocorrência:</label>
+<label>📸 Foto da Ocorrência:</label>
 <input 
   type="file" 
   id="fotosOcorrencia" 
   accept="image/*" 
   multiple 
 >
-<button class="btn" onclick="compartilharFotos()">Compartilhar Fotos</button>
+<button class="btn" onclick="compartilharFotos()">Compartilhar Foto</button>
 </div>
 
 
@@ -479,8 +479,8 @@ async function compartilharFotos() {
   if (navigator.canShare && navigator.canShare({ files: arquivosRenomeados })) {
     try {
       await navigator.share({
-        title: 'Fotos da Ocorrência',
-        text: `Fotos do relatório de ocorrência${numeroRelatorio}.`,
+        title: 'Foto da Ocorrência',
+        text: `Foto do relatório de ocorrência${numeroRelatorio}.`,
         files: arquivosRenomeados
       });
     } catch (err) {
@@ -492,6 +492,7 @@ async function compartilharFotos() {
 }</script>
 </body>
 </html>
+
 
 
 
