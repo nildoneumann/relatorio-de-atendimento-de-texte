@@ -27,17 +27,17 @@
     }
     .logo { width: 120px; max-width: 30%; height: auto; }
     .linha-horizontal, .linha-horizontal-2, .linha-horizontal-3 {
-      display: flex; gap: 10px; flex-wrap: wrap; margin-top: 2,5px;
+      display: flex; gap: 10px; flex-wrap: wrap; margin-top: 3px;
     }
     .linha-horizontal label, .linha-horizontal-2 label, .linha-horizontal-3 label {
       flex: 1; min-width: 180px;
     }
-    label { display: block; margin-top: 6px; }
+    label { display: block; margin-top: 7px; }
     input[type="text"], input[type="date"], input[type="time"], textarea {
       width: 100%; padding: 5px; font-weight: bold; font-size: 15px;
       color: blue; border-radius: 4px;
     }
-      textarea {
+    textarea {
       height: auto; min-height: 180px; color: blue; font-family: Arial, sans-serif; font-size: 14px;
     }
     .btn {
@@ -45,40 +45,22 @@
       background-color: #D6FFFF; color: blue; border-radius: 10px;
       cursor: pointer; width: 100%;
     }
-    .botao { /* reservado pra botão com link */
+    .botao {
       color: #FFFFFF; padding: 10px 15px; text-align: center; display: inline-block;
       font-size: 17px; cursor: pointer; border-radius: 10px; width: 100%; background-color: green; text-decoration: none;
     }
     .btn:not(:last-child) { margin-bottom: 10px; }
+    button[type="button"] { padding: 4px 5px; font-size: 15px; font-weight: bold; color: #15400e; }
     p {
       color: red; margin-top: 1px; font-size: 12px; text-align: center; padding: 2px; background-color: #ffffc5;
     }
     #pdf-content { background-color: #D6FFFF; padding: 15px 10px; border-radius: 4px; }
     canvas#assinatura { border: 1px solid #000; }
-    .neumann { font-size: 8px; color: black; text-align: right; margin-bottom: 15px; }
+    .neumann { font-size: 9px; color: black; text-align: right; margin-bottom: 16px; }
     .equipe { margin-top: 3px; background-color: #dbead5; padding: 5px 3px; border-radius: 4px; color: #132c0d; }
- /* 🔹 Ajustes www.ctbdigital.com.br */
-    .digital { margin-top: 6px; padding: 10px 15px; font-weight: bold; font-size: 18px;
+     .digital { margin-top: 7px; padding: 10px 15px; font-weight: bold; font-size: 18px;
       background-color: green; color: blue; border-radius: 10px;
       cursor: pointer; width: 100%; }
- /* 🔹 Ajustes para fotos */
-    #fotos-container {
-      margin-top: 5px;
-    }
-    .foto-box {
-      margin-bottom: 5px;
-      page-break-inside: avoid; /* evita cortar foto no meio */
-      break-inside: avoid;
-      text-align: center;
-    }
-    .foto-box img {
-      max-width: 100%;
-      max-height: 200px; /* garante que caiba em uma página A4 */
-      object-fit: contain;
-      border: 1px solid #000;
-      border-radius: 5px;
-    }
-
   </style>
 </head>
 <body>
@@ -91,7 +73,9 @@
   </div>
   <h1><u>RELATÓRIO DE ATENDIMENTO DE OCORRÊNCIA</u></h1>
 
-  <label style="text-align: center">1 - NÚMERO: <input type="text" name="numero" style="width: 70px;"> ANO: <input type="text" name="ano" style="width: 50px;"></label>
+  <label style="text-align: center"><button type="button" onclick="obterNumeroGlobal()">
+  🔢 NÚMERO 
+</button> <input type="text" name="numero" style="width: 70px;"> ANO <input type="text" name="ano" style="width: 50px;"></label>
   <div class="linha-horizontal">
     <label>Data: <input type="date" name="data"></label>
     <label>Hora Início: <input type="time" name="hora_inicio"></label>
@@ -101,11 +85,14 @@
     <label>2 - SOLICITANTE: <input type="text" name="solicitante"></label>
     <label>NÚMERO DO TELEFONE: <input type="text" name="telefone"></label>
   </div>
-  <label>
-  LOCAL DA OCORRÊNCIA:
-  <input type="text" name="local" id="local" placeholder="Ative a localização para preencher automaticamente"> 
+  <label>LOCAL DA OCORRÊNCIA: <button type="button"
+          onclick="preencherEndereco()"
+          style="padding:1px; font-weight:bold; font-size: 12,5px">
+    📍Usar localização atual
+  </button>
+ <input type="text" name="local" id="local" placeholder="Ative a localização para preencher automaticamente"> 
 </label>
-  <label>SITUAÇÃO INFORMADA: <textarea style="min-height: 90px;"></textarea></label>
+  <label>SITUAÇÃO INFORMADA: <textarea name="situacao"></textarea></label>
   <label>3 - RELATÓRIO DO ATENDIMENTO E AÇÕES REALIZADAS: <textarea name="relatorio"></textarea></label>
   <label>- Autos de infração lavrados: <input type="text" name="autos"></label>
   <label>- Número de pessoas atendidas: <input type="text" name="pessoas_atendidas"></label>
@@ -122,12 +109,7 @@
       <label>Nome Agente 4: <input type="text" name="assinatura4"></label>
     </div>
     <label>VTR(s): <input type="text" name="vtr"></label>
-   </div>
-<!-- 🔹 Seção para fotos -->
-  <input type="file" id="fotoInput" accept="image/*" multiple style="display:none">
-  <div id="fotos-container">
-    <label>Fotos do Local:</label><br>
-  </div> 
+   </div> 
   <div class="assinatura">
     <label>Assinaturas (Agentes 1, 2, 3 e 4):</label>
     <canvas id="assinatura" width="690" height="170"></canvas><br>
@@ -141,20 +123,31 @@
     </div>
   </div>
 </div>
-<div style="text-align:center; margin-top:10px; margin-bottom: 5px; background-color: yellow; padding: 10px 15px;">
+<div style="background-color: #dbead5; margin-top: 2px; padding: 0px 15px 6px 15px; border-radius: 4px;">
+<label>📸 Fotos da Ocorrência:</label>
+<input 
+  type="file" 
+  id="fotosOcorrencia" 
+  accept="image/*" 
+  multiple 
+>
+<button class="btn" onclick="compartilharFotos()">Compartilhar Fotos</button>
+</div>
+
+
+<div style="text-align:center; margin-top:10px; margin-bottom: 5px; background-color: yellow; padding: 8px 12px;">
   <a href="termos de uso.html" target="_blank">📑 Termos de Uso</a>
 </div>
 <button class="btn" onclick="limparAssinatura()">Limpar Assinatura</button>
-<button class="btn" onclick="document.getElementById('fotoInput').click()">📷 Adicionar Foto</button>
 <button class="btn" onclick="compartilharPDF()">Compartilhar PDF</button>
 <button class="btn" onclick="gerarPDF()">Baixar PDF</button>
-<a href="BUSCA CTB capítulo XV.html" target="_blank" class="botao">CTB CAPÍTULO XV ( Das Infrações )</a>
+
+<a href="BUSCA CTB capítulo XV 2.html" target="_blank" class="botao">CTB CAPÍTULO XV ( Das Infrações )</a>
 <div class="digital">
 <a href="https://www.ctbdigital.com.br/busca-artigo" target="_blank">
 <img src=https://ec8cdf0b81.cbaul-cdnwnd.com/4862c32e4e9e39e3136f5b1c72516de8/200000017-b30b7b30b9/450/Captura%20de%20tela%202025-09-12%20202715.webp?ph=ec8cdf0b81 style="width: 298px; height: 91px; margin: 0 auto; display: block;">
 </a>
 </div>
-
 
 <script>
 const canvas = document.getElementById('assinatura');
@@ -213,11 +206,12 @@ function getNumeroRelatorio() {
   const agora = new Date();
   const data = agora.toLocaleDateString('pt-BR').split('/').reverse().join('-');
   const hora = agora.toTimeString().split(' ')[0].replace(/:/g, '-');
-if (numero) {
+  if (numero) {
   return `relatorio_${numero}_${data}_${hora}.pdf`;
-} else {
-return `relatorio_${data}_${hora}.pdf`; // nome padrão caso esteja vazio
+  } else {
+  return `relatorio_${data}_${hora}.pdf`; // nome padrão caso esteja vazio
   }
+
 }
 
 function gerarPDF() {
@@ -325,41 +319,14 @@ async function compartilharPDF() {
 
   document.body.removeChild(container);
 }
-/* 🔹 Script para fotos (até 3) */
-const fotoInput = document.getElementById('fotoInput');
-const fotosContainer = document.getElementById('fotos-container');
-
-fotoInput.addEventListener('change', (event) => {
-  fotosContainer.innerHTML = '<label>Fotos do Local:</label><br>'; // limpa antes
-  const files = Array.from(event.target.files);
-
- files.slice(0,3).forEach((file, index) => {
-  const div = document.createElement('div');
-  div.classList.add('foto-box');
-  
-  const img = document.createElement('img');
-  img.src = URL.createObjectURL(file); // ✅ mais seguro e compatível com PWA
-  img.onload = () => {
-    URL.revokeObjectURL(img.src); // libera memória após carregar
-  };
-
-  const p = document.createElement('p');
-  p.textContent = `Foto ${index + 1}`;
-
-  div.appendChild(p);
-  div.appendChild(img);
-  fotosContainer.appendChild(div);
-});
-
-});
-
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js')
     .then(() => console.log('Service Worker registrado com sucesso'))
     .catch(error => console.log('Erro ao registrar o Service Worker:', error));
 }
-  // 🔹 Preenchimento automático do endereço via GPS (OpenStreetMap)
+
+// 🔹 Preenchimento automático do endereço via GPS (OpenStreetMap)
   self.addEventListener('fetch', (event) => {
   if (event.request.url.includes('nominatim.openstreetmap.org')) {
     event.respondWith(fetch(event.request));
@@ -396,8 +363,8 @@ function preencherEndereco() {
           data.address.road,
           data.address.house_number,
           data.address.suburb,
-          data.address.city || data.address.town,
-          data.address.state
+          data.address.city || data.address.town
+          
         ].filter(Boolean).join(' - ');
 
         document.getElementById('local').value =
@@ -426,39 +393,108 @@ window.addEventListener('load', () => {
   }, 800);
 });
 
-  // 🔹 Preenchimento automático de ANO e DATA
 document.addEventListener('DOMContentLoaded', () => {
-  const hoje = new Date();
+  const agora = new Date();
 
-  // 🔹 Campo ANO
+  // ANO
   const campoAno = document.querySelector('input[name="ano"]');
   if (campoAno && !campoAno.value) {
-    campoAno.value = hoje.getFullYear();
+    campoAno.value = agora.getFullYear();
   }
-
-  // 🔹 Campo DATA (formato yyyy-mm-dd)
+  
+  // DATA
   const campoData = document.querySelector('input[name="data"]');
   if (campoData && !campoData.value) {
-    const yyyy = hoje.getFullYear();
-    const mm = String(hoje.getMonth() + 1).padStart(2, '0');
-    const dd = String(hoje.getDate()).padStart(2, '0');
+    const yyyy = agora.getFullYear();
+    const mm = String(agora.getMonth() + 1).padStart(2, '0');
+    const dd = String(agora.getDate()).padStart(2, '0');
     campoData.value = `${yyyy}-${mm}-${dd}`;
   }
-});
 
-// 🔹 Preenchimento automático da HORA INÍCIO
-document.addEventListener('DOMContentLoaded', () => {
+  // HORA INÍCIO
   const campoHoraInicio = document.querySelector('input[name="hora_inicio"]');
-
   if (campoHoraInicio && !campoHoraInicio.value) {
-    const agora = new Date();
     const hh = String(agora.getHours()).padStart(2, '0');
     const mm = String(agora.getMinutes()).padStart(2, '0');
     campoHoraInicio.value = `${hh}:${mm}`;
   }
+
+  // ENDEREÇO (GPS)
+  const campoLocal = document.getElementById('local');
+  if (campoLocal && !campoLocal.value) {
+    try { preencherEndereco(); } catch (e) {}
+  }
 });
 
-</script>
+async function obterNumeroGlobal() {
+  const btn = event?.target;
+  const inputNumero = document.querySelector('input[name="numero"]');
+  const inputAno = document.querySelector('input[name="ano"]');
+
+  // Evita gerar duas vezes
+  if (inputNumero.value) {
+    alert('Número já foi gerado.');
+    return;
+  }
+
+  if (btn) btn.disabled = true;
+
+  try {
+    const response = await fetch(
+      'https://script.google.com/macros/s/AKfycbzX6YyTI70dNpfQh9XBcXhYpEGfud6uYh29e3vFuhtqqjYae6VseboqHrLCsqS-R_02/exec'
+    );
+
+    const data = await response.json();
+
+    inputNumero.value = data.numero;
+    inputAno.value = data.ano;
+
+  } catch (err) {
+    alert('Sem conexão. Número não sincronizado.');
+    console.error(err);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function compartilharFotos() {
+  const input = document.getElementById('fotosOcorrencia');
+  const inputNumero = document.querySelector('input[name="numero"]');
+
+  if (!input.files || input.files.length === 0) {
+    alert('Nenhuma foto selecionada.');
+    return;
+  }
+
+  const numeroRelatorio = inputNumero && inputNumero.value
+    ? inputNumero.value
+    : 'sem_numero';
+
+  const arquivos = Array.from(input.files);
+
+  const arquivosRenomeados = arquivos.map((file, index) => {
+    const ext = file.name.split('.').pop();
+    return new File(
+      [file],
+      `foto_ocorrencia_${numeroRelatorio}_${index + 1}.${ext}`,
+      { type: file.type }
+    );
+  });
+
+  if (navigator.canShare && navigator.canShare({ files: arquivosRenomeados })) {
+    try {
+      await navigator.share({
+        title: 'Fotos da Ocorrência',
+        text: `Fotos do relatório de ocorrência${numeroRelatorio}.`,
+        files: arquivosRenomeados
+      });
+    } catch (err) {
+      // usuário cancelou
+    }
+  } else {
+    alert('Este navegador não suporta compartilhamento de arquivos.');
+  }
+}</script>
 </body>
 </html>
 
