@@ -74,8 +74,7 @@
   <h1><u>RELATÓRIO DE ATENDIMENTO DE OCORRÊNCIA</u></h1>
 
   <label style="text-align: center"><button type="button" onclick="obterNumeroGlobal()">
-  🔢 NÚMERO 
-</button> <input type="text" name="numero" style="width: 70px;"> ANO <input type="text" name="ano" style="width: 50px;"></label>
+   NÚMERO ➡️ </button> <input type="text" name="numero" style="width: 70px;"> ANO ➡️ <input type="text" name="ano" style="width: 50px;"></label>
   <div class="linha-horizontal">
     <label>Data: <input type="date" name="data"></label>
     <label>Hora Início: <input type="time" name="hora_inicio"></label>
@@ -85,13 +84,13 @@
     <label>2 - SOLICITANTE: <input type="text" name="solicitante"></label>
     <label>NÚMERO DO TELEFONE: <input type="text" name="telefone"></label>
   </div>
-  <label>LOCAL DA OCORRÊNCIA: <button type="button"
+  <label><button type="button"
           onclick="preencherEndereco()"
-          style="padding:1px; font-weight:bold; font-size: 12,5px">
-    📍Usar localização atual
-  </button>
+          style="padding:2px 5px; font-weight:bold; font-size: 15px">
+    LOCAL DA OCORRÊNCIA: </button>
  <input type="text" name="local" id="local" placeholder="Ative a localização para preencher automaticamente"> 
 </label>
+
   <label>SITUAÇÃO INFORMADA: <textarea name="situacao"></textarea></label>
   <label>3 - RELATÓRIO DO ATENDIMENTO E AÇÕES REALIZADAS: <textarea name="relatorio"></textarea></label>
   <label>- Autos de infração lavrados: <input type="text" name="autos"></label>
@@ -497,6 +496,7 @@ async function compartilharFotos() {
 }</script>
 </body>
 </html>
+
 
 
 
