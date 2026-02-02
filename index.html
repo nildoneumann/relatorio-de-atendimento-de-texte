@@ -409,13 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
     campoData.value = `${yyyy}-${mm}-${dd}`;
   }
 
-  // HORA INÍCIO
-  const campoHoraInicio = document.querySelector('input[name="hora_inicio"]');
-  if (campoHoraInicio && !campoHoraInicio.value) {
-    const hh = String(agora.getHours()).padStart(2, '0');
-    const mm = String(agora.getMinutes()).padStart(2, '0');
-    campoHoraInicio.value = `${hh}:${mm}`;
-  }
+  
 
   // ENDEREÇO (GPS)
   const campoLocal = document.getElementById('local');
@@ -495,6 +489,7 @@ async function compartilharFotos() {
 }</script>
 </body>
 </html>
+
 
 
 
