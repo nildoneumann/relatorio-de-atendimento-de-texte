@@ -83,32 +83,15 @@
   </div>
   <div class="linha-horizontal">
     <label>2 - SOLICITANTE: <input type="text" name="solicitante"></label>
-    <label>NÚMERO DO TELEFONE:📞 <input type="text" name="telefone"></label>
+    <label>NÚMERO DO TELEFONE: <input type="text" name="telefone"></label>
   </div>
-  <label>
-  LOCAL DA OCORRÊNCIA:
-  
-  <button type="button"
-          onclick="abrirMaps()"
-          style="padding:1px; font-weight:bold; font-size:12.5px">
-    🗺️ Escolher no Maps
-  </button>
-
-  <button type="button"
+  <label>LOCAL DA OCORRÊNCIA: <button type="button"
           onclick="preencherEndereco()"
-          style="padding:1px; font-weight:bold; font-size:12.5px">
-    📌 Localização atual
+          style="padding:1px; font-weight:bold; font-size: 12,5px">
+    📍Usar localização atual
   </button>
-
-  <input
-    type="text"
-    name="local"
-    id="local"
-    placeholder="Use o Maps ou a localização para preencher"
-    readonly
-  >
+ <input type="text" name="local" id="local" placeholder="Ative a localização para preencher automaticamente"> 
 </label>
-
   <label>SITUAÇÃO INFORMADA: <textarea name="situacao"></textarea></label>
   <label>3 - RELATÓRIO DO ATENDIMENTO E AÇÕES REALIZADAS: <textarea name="relatorio"></textarea></label>
   <label>- Autos de infração lavrados: <input type="text" name="autos"></label>
@@ -140,6 +123,16 @@
     </div>
   </div>
 </div>
+<div style="background-color: #dbead5; margin-top: 2px; padding: 0px 15px 6px 15px; border-radius: 4px;">
+<label>📸 Fotos da Ocorrência:</label>
+<input 
+  type="file" 
+  id="fotosOcorrencia" 
+  accept="image/*" 
+  multiple 
+>
+<button class="btn" onclick="compartilharFotos()">Compartilhar Fotos</button>
+</div>
 
 
 <div style="text-align:center; margin-top:10px; margin-bottom: 5px; background-color: yellow; padding: 8px 12px;">
@@ -155,33 +148,26 @@
 <img src=https://ec8cdf0b81.cbaul-cdnwnd.com/4862c32e4e9e39e3136f5b1c72516de8/200000017-b30b7b30b9/450/Captura%20de%20tela%202025-09-12%20202715.webp?ph=ec8cdf0b81 style="width: 298px; height: 91px; margin: 0 auto; display: block;">
 </a>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
 <script>
-/* =========================
-   ASSINATURA (CANVAS)
-========================= */
 const canvas = document.getElementById('assinatura');
 const ctx = canvas.getContext('2d');
 let desenhando = false;
 
 function getPos(event) {
-  const rect = canvas.getBoundingClientRect();
   if (event.touches) {
-    return {
-      x: event.touches[0].clientX - rect.left,
-      y: event.touches[0].clientY - rect.top
-    };
+    const rect = canvas.getBoundingClientRect();
+    return { x: event.touches[0].clientX - rect.left, y: event.touches[0].clientY - rect.top };
+  } else {
+    return { x: event.offsetX, y: event.offsetY };
   }
-  return { x: event.offsetX, y: event.offsetY };
 }
-
 function iniciarDesenho(e) {
   desenhando = true;
   const pos = getPos(e);
   ctx.beginPath();
   ctx.moveTo(pos.x, pos.y);
 }
-
 function desenhar(e) {
   if (!desenhando) return;
   e.preventDefault();
@@ -189,215 +175,329 @@ function desenhar(e) {
   ctx.lineTo(pos.x, pos.y);
   ctx.stroke();
 }
-
-function pararDesenho() {
-  desenhando = false;
-}
+function pararDesenho() { desenhando = false; }
 
 canvas.addEventListener('mousedown', iniciarDesenho);
 canvas.addEventListener('mousemove', desenhar);
 canvas.addEventListener('mouseup', pararDesenho);
 canvas.addEventListener('mouseleave', pararDesenho);
-canvas.addEventListener('touchstart', iniciarDesenho, { passive: false });
-canvas.addEventListener('touchmove', desenhar, { passive: false });
+canvas.addEventListener('touchstart', iniciarDesenho);
+canvas.addEventListener('touchmove', desenhar);
 canvas.addEventListener('touchend', pararDesenho);
 
-function limparAssinatura() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-}
+function limparAssinatura() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
 
-/* =========================
-   GEOLOCALIZAÇÃO + MAPS
-========================= */
-function abrirMaps() {
-  if (!navigator.geolocation) {
-    alert("Geolocalização não suportada.");
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      const lat = pos.coords.latitude;
-      const lon = pos.coords.longitude;
-      const url = `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`;
-      window.open(url, "_blank");
-    },
-    () => alert("Ative a localização."),
-    { enableHighAccuracy: true, timeout: 15000 }
-  );
-}
-
-async function preencherEndereco() {
-  if (!navigator.geolocation) return;
-
-  navigator.geolocation.getCurrentPosition(
-    async (pos) => {
-      const lat = pos.coords.latitude;
-      const lon = pos.coords.longitude;
-
-      try {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,
-          {
-            headers: {
-              "Accept-Language": "pt-BR",
-              "User-Agent": "RelatorioOcorrencia/1.0"
-            }
-          }
-        );
-
-        if (!response.ok) throw new Error();
-
-        const data = await response.json();
-        const a = data.address || {};
-
-        const endereco = [
-          a.road,
-          a.house_number,
-          a.suburb,
-          a.city || a.town
-        ].filter(Boolean).join(" - ");
-
-        document.getElementById("local").value =
-          endereco || "Localização obtida (edite se necessário)";
-
-      } catch {
-        document.getElementById("local").value =
-          `Lat: ${lat.toFixed(6)}, Lon: ${lon.toFixed(6)}`;
-      }
-    },
-    () => alert("Erro ao obter localização."),
-    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-  );
-}
-
-/* Preenche ao voltar do Google Maps */
-document.addEventListener("visibilitychange", () => {
-  if (!document.hidden) preencherEndereco();
-});
-
-/* =========================
-   PDF / COMPARTILHAMENTO
-========================= */
 function prepararAssinatura(clone) {
-  const original = document.getElementById('assinatura');
-  const alvo = clone.querySelector('#assinatura');
-  if (original && alvo) {
+  const canvasOriginal = document.getElementById('assinatura');
+  const assinaturaClone = clone.querySelector('#assinatura');
+  if (canvasOriginal && assinaturaClone) {
+    const imgData = canvasOriginal.toDataURL();
     const img = document.createElement('img');
-    img.src = original.toDataURL();
-    img.width = original.width;
-    img.height = original.height;
-    img.style.border = "1px solid #000";
-    alvo.replaceWith(img);
+    img.src = imgData;
+    img.style.border = '1px solid #000';
+    img.width = canvasOriginal.width;
+    img.height = canvasOriginal.height;
+    assinaturaClone.parentNode.replaceChild(img, assinaturaClone);
   }
 }
 
 function getNumeroRelatorio() {
   const numero = document.querySelector('input[name="numero"]').value.trim();
   const agora = new Date();
-  const data = agora.toISOString().slice(0,10);
-  const hora = agora.toTimeString().slice(0,8).replace(/:/g,'-');
-  return numero
-    ? `relatorio_${numero}_${data}_${hora}.pdf`
-    : `relatorio_${data}_${hora}.pdf`;
+  const data = agora.toLocaleDateString('pt-BR').split('/').reverse().join('-');
+  const hora = agora.toTimeString().split(' ')[0].replace(/:/g, '-');
+  if (numero) {
+  return `relatorio_${numero}_${data}_${hora}.pdf`;
+  } else {
+  return `relatorio_${data}_${hora}.pdf`; // nome padrão caso esteja vazio
+  }
+
 }
 
-async function gerarOuCompartilhar(compartilhar = false) {
+function gerarPDF() {
+  const original = document.getElementById('pdf-content');
+  const clone = original.cloneNode(true);
+  const textareas = clone.querySelectorAll('textarea');
+  textareas.forEach(textarea => {
+    const div = document.createElement('div');
+    div.style.whiteSpace = 'pre-wrap';
+    div.style.border = '1px solid #ccc';
+    div.style.padding = '5px';
+    div.style.minHeight = '80px';
+    div.style.fontWeight = 'bold';
+    div.style.fontSize = '14px';
+    div.style.backgroundColor = 'white';
+    div.style.color = 'blue';
+    div.textContent = textarea.value;
+    textarea.parentNode.replaceChild(div, textarea);
+  });
+  prepararAssinatura(clone);
+  const container = document.createElement('div');
+  container.style.position = 'absolute';
+  container.style.left = '-9999px';
+  container.appendChild(clone);
+  document.body.appendChild(container);
+  
+  const opt = {
+    margin: [5, 5, 5, 5],
+    filename: getNumeroRelatorio(),
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { 
+      scale: 3,
+      useCORS: true,
+      scrollY: 0,
+      windowWidth: document.documentElement.scrollWidth,
+      windowHeight: document.documentElement.scrollHeight
+    },
+pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },    
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  html2pdf().set(opt).from(clone).save().then(() => {
+    document.body.removeChild(container);
+  });
+}
+
+async function compartilharPDF() {
   const original = document.getElementById('pdf-content');
   const clone = original.cloneNode(true);
 
-  clone.querySelectorAll('textarea').forEach(t => {
+  const textareas = clone.querySelectorAll('textarea');
+  textareas.forEach(textarea => {
     const div = document.createElement('div');
-    div.textContent = t.value;
-    div.style.whiteSpace = "pre-wrap";
-    div.style.fontWeight = "bold";
-    div.style.fontSize = "14px";
-    div.style.border = "1px solid #ccc";
-    div.style.padding = "5px";
-    t.replaceWith(div);
+    div.style.whiteSpace = 'pre-wrap';
+    div.style.border = '1px solid #ccc';
+    div.style.padding = '5px';
+    div.style.minHeight = '80px';
+    div.style.fontWeight = 'bold';
+    div.style.fontSize = '14px';
+    div.style.backgroundColor = 'white';
+    div.style.color = 'blue';
+    div.textContent = textarea.value;
+    textarea.parentNode.replaceChild(div, textarea);
   });
 
   prepararAssinatura(clone);
 
   const container = document.createElement('div');
-  container.style.position = "absolute";
-  container.style.left = "-9999px";
+  container.style.position = 'absolute';
+  container.style.left = '-9999px';
   container.appendChild(clone);
   document.body.appendChild(container);
 
   const opt = {
-    margin: 5,
+    margin: [5, 5, 5, 5],
     filename: getNumeroRelatorio(),
-    html2canvas: { scale: 3, useCORS: true },
-    jsPDF: { unit: "mm", format: "a4" }
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { 
+      scale: 3,
+      useCORS: true,
+      scrollY: 0,
+      windowWidth: document.documentElement.scrollWidth,
+      windowHeight: document.documentElement.scrollHeight
+    },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
 
-  if (compartilhar) {
-    const blob = await html2pdf().set(opt).from(clone).outputPdf("blob");
-    const file = new File([blob], getNumeroRelatorio(), { type: "application/pdf" });
+  const blob = await html2pdf().set(opt).from(clone).outputPdf('blob');
 
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({ files: [file], title: "Relatório" });
-    } else {
-      alert("Compartilhamento não suportado.");
+  const file = new File([blob], getNumeroRelatorio(), { type: 'application/pdf' });
+
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
+      await navigator.share({
+        title: 'Relatório de Ocorrência',
+        text: 'Confira o relatório preenchido.',
+        files: [file]
+      });
+    } catch (err) {
+      alert('Compartilhamento cancelado ou falhou.');
     }
   } else {
-    await html2pdf().set(opt).from(clone).save();
+    alert('Compartilhamento de arquivos não suportado neste navegador.');
   }
 
   document.body.removeChild(container);
 }
 
-function gerarPDF() {
-  gerarOuCompartilhar(false);
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js')
+    .then(() => console.log('Service Worker registrado com sucesso'))
+    .catch(error => console.log('Erro ao registrar o Service Worker:', error));
 }
 
-function compartilharPDF() {
-  gerarOuCompartilhar(true);
-}
+// 🔹 Preenchimento automático do endereço via GPS (OpenStreetMap)
+  self.addEventListener('fetch', (event) => {
+  if (event.request.url.includes('nominatim.openstreetmap.org')) {
+    event.respondWith(fetch(event.request));
+  }
+});
 
-/* =========================
-   CONTADOR GLOBAL
-========================= */
+function preencherEndereco() {
+  if (!('geolocation' in navigator)) {
+    alert("Geolocalização não suportada neste dispositivo.");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,
+          {
+            headers: {
+              'Accept-Language': 'pt-BR',
+              'User-Agent': 'RelatorioOcorrencia/1.0'
+            }
+          }
+        );
+
+        if (!response.ok) throw new Error('Erro HTTP');
+
+        const data = await response.json();
+
+        const endereco = [
+          data.address.road,
+          data.address.house_number,
+          data.address.suburb,
+          data.address.city || data.address.town
+          
+        ].filter(Boolean).join(' - ');
+
+        document.getElementById('local').value =
+          endereco || 'Localização obtida, edite se necessário';
+
+      } catch (e) {
+        document.getElementById('local').value =
+          `Lat: ${lat.toFixed(6)}, Lon: ${lon.toFixed(6)} (edite manualmente)`;
+      }
+    },
+    (error) => {
+      alert("Não foi possível obter a localização. Verifique GPS e permissões.");
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
+    }
+  );
+}
+// 🔹 Tenta preencher automaticamente ao abrir o formulário
+window.addEventListener('load', () => {
+  // pequeno atraso para evitar bloqueio em mobile
+  setTimeout(() => {
+    preencherEndereco();
+  }, 800);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const agora = new Date();
+
+  // ANO
+  const campoAno = document.querySelector('input[name="ano"]');
+  if (campoAno && !campoAno.value) {
+    campoAno.value = agora.getFullYear();
+  }
+  
+  // DATA
+  const campoData = document.querySelector('input[name="data"]');
+  if (campoData && !campoData.value) {
+    const yyyy = agora.getFullYear();
+    const mm = String(agora.getMonth() + 1).padStart(2, '0');
+    const dd = String(agora.getDate()).padStart(2, '0');
+    campoData.value = `${yyyy}-${mm}-${dd}`;
+  }
+
+  // HORA INÍCIO
+  const campoHoraInicio = document.querySelector('input[name="hora_inicio"]');
+  if (campoHoraInicio && !campoHoraInicio.value) {
+    const hh = String(agora.getHours()).padStart(2, '0');
+    const mm = String(agora.getMinutes()).padStart(2, '0');
+    campoHoraInicio.value = `${hh}:${mm}`;
+  }
+
+  // ENDEREÇO (GPS)
+  const campoLocal = document.getElementById('local');
+  if (campoLocal && !campoLocal.value) {
+    try { preencherEndereco(); } catch (e) {}
+  }
+});
+
 async function obterNumeroGlobal() {
+  const btn = event?.target;
   const inputNumero = document.querySelector('input[name="numero"]');
   const inputAno = document.querySelector('input[name="ano"]');
-  if (inputNumero.value) return alert("Número já gerado.");
+
+  // Evita gerar duas vezes
+  if (inputNumero.value) {
+    alert('Número já foi gerado.');
+    return;
+  }
+
+  if (btn) btn.disabled = true;
 
   try {
-    const res = await fetch(
-      "https://script.google.com/macros/s/AKfycbzX6YyTI70dNpfQh9XBcXhYpEGfud6uYh29e3vFuhtqqjYae6VseboqHrLCsqS-R_02/exec"
+    const response = await fetch(
+      'https://script.google.com/macros/s/AKfycbzX6YyTI70dNpfQh9XBcXhYpEGfud6uYh29e3vFuhtqqjYae6VseboqHrLCsqS-R_02/exec'
     );
-    const data = await res.json();
+
+    const data = await response.json();
+
     inputNumero.value = data.numero;
     inputAno.value = data.ano;
-  } catch {
-    alert("Sem conexão com o servidor.");
+
+  } catch (err) {
+    alert('Sem conexão. Número não sincronizado.');
+    console.error(err);
+  } finally {
+    if (btn) btn.disabled = false;
   }
 }
 
-/* =========================
-   INIT
-========================= */
-document.addEventListener("DOMContentLoaded", () => {
-  const agora = new Date();
+async function compartilharFotos() {
+  const input = document.getElementById('fotosOcorrencia');
+  const inputNumero = document.querySelector('input[name="numero"]');
 
-  document.querySelector('input[name="ano"]').value ||= agora.getFullYear();
-  document.querySelector('input[name="data"]').value ||= agora.toISOString().slice(0,10);
-  document.querySelector('input[name="hora_inicio"]').value ||= agora.toTimeString().slice(0,5);
+  if (!input.files || input.files.length === 0) {
+    alert('Nenhuma foto selecionada.');
+    return;
+  }
 
-  setTimeout(preencherEndereco, 800);
-});
+  const numeroRelatorio = inputNumero && inputNumero.value
+    ? inputNumero.value
+    : 'sem_numero';
 
-/* =========================
-   SERVICE WORKER
-========================= */
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
-}
-</script>
+  const arquivos = Array.from(input.files);
+
+  const arquivosRenomeados = arquivos.map((file, index) => {
+    const ext = file.name.split('.').pop();
+    return new File(
+      [file],
+      `foto_ocorrencia_${numeroRelatorio}_${index + 1}.${ext}`,
+      { type: file.type }
+    );
+  });
+
+  if (navigator.canShare && navigator.canShare({ files: arquivosRenomeados })) {
+    try {
+      await navigator.share({
+        title: 'Fotos da Ocorrência',
+        text: `Fotos do relatório de ocorrência${numeroRelatorio}.`,
+        files: arquivosRenomeados
+      });
+    } catch (err) {
+      // usuário cancelou
+    }
+  } else {
+    alert('Este navegador não suporta compartilhamento de arquivos.');
+  }
+}</script>
 </body>
 </html>
+
 
 
 
