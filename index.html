@@ -95,7 +95,6 @@
   <label>- Autos de infração lavrados: <input type="text" name="autos"></label>
   <label>- Número de pessoas atendidas: <input type="text" name="pessoas_atendidas"></label>
   <label>- Veículos recolhidos: <input type="text" name="veiculos"></label>
-
   <div class="equipe">
     <label style="text-align: center; color: blue; background-color: #FFFFFF; width: 100px;"> EQUIPE 👮</label>
     <div class="linha-horizontal-2">
@@ -112,7 +111,6 @@
     <label>Assinaturas (Agentes 1, 2, 3 e 4):</label>
     <canvas id="assinatura" width="690" height="170"></canvas><br>
   </div>
-
   <p><strong>OBS:</strong> Este documento é uma coleta preliminar de dados, para controle de atendimentos de ACIDENTES/OCORRÊNCIA da SMDSM, e não substitui o registro realizado por outros órgãos.</p>
 
   <div class="neumann">
@@ -121,32 +119,29 @@
     </div>
   </div>
 </div>
-<div style="background-color: #dbead5; margin-top: 2px; padding: 0px 15px 6px 15px; border-radius: 4px;">
-<label>📸 Fotos da Ocorrência:</label>
+
+<button class="btn" onclick="limparAssinatura()">Limpar Assinatura</button>
+<button class="btn" onclick="compartilharPDF()">Compartilhar PDF</button>
+<button class="btn" onclick="gerarPDF()">Baixar PDF</button>
+  
+<div style="background-color: #dbead5; margin-top: 2px; padding: 1px 10px 6px 10px; border-radius: 4px; margin-bottom: 8px">
+<label style="font-size: 17px; margin-bottom: 1px">📸 Fotos da Ocorrência:</label>
 <input 
   type="file" 
   id="fotosOcorrencia" 
   accept="image/*" 
-  multiple 
+  multiple style="font-size: 16px" 
 >
 <button class="btn" onclick="compartilharFotos()">Compartilhar Fotos</button>
 </div>
-
-
-<div style="text-align:center; margin-top:10px; margin-bottom: 5px; background-color: yellow; padding: 8px 12px;">
-  <a href="termos de uso.html" target="_blank">📑 Termos de Uso</a>
-</div>
-<button class="btn" onclick="limparAssinatura()">Limpar Assinatura</button>
-<button class="btn" onclick="compartilharPDF()">Compartilhar PDF</button>
-<button class="btn" onclick="gerarPDF()">Baixar PDF</button>
-
 <a href="BUSCA CTB capítulo XV 2.html" target="_blank" class="botao">CTB CAPÍTULO XV ( Das Infrações )</a>
 <div class="digital">
 <a href="https://www.ctbdigital.com.br/busca-artigo" target="_blank">
 <img src=https://ec8cdf0b81.cbaul-cdnwnd.com/4862c32e4e9e39e3136f5b1c72516de8/200000017-b30b7b30b9/450/Captura%20de%20tela%202025-09-12%20202715.webp?ph=ec8cdf0b81 style="width: 298px; height: 91px; margin: 0 auto; display: block;">
 </a>
 </div>
-
+<div style="text-align:center; margin-top:10px; margin-bottom: 5px; background-color: yellow; padding: 8px 12px;">
+  <a href="termos de uso.html" target="_blank">📑 Termos de Uso</a>
 <script>
 const canvas = document.getElementById('assinatura');
 const ctx = canvas.getContext('2d');
@@ -489,6 +484,7 @@ async function compartilharFotos() {
 }</script>
 </body>
 </html>
+
 
 
 
