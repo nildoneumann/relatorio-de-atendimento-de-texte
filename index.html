@@ -125,7 +125,7 @@
 
 
 <button class="btn" onclick="limparAssinatura()">Limpar Assinatura</button>
-
+<button type="button" onclick="obterNumeroGlobal()">Finalizar Relatório</button>
 <button class="btn" onclick="compartilharPDF()">Compartilhar PDF</button>
 <button class="btn" onclick="gerarPDF()">Baixar PDF</button>
 
@@ -213,11 +213,19 @@ function getNumeroRelatorio() {
   }
 }
 
+function validarNumeroRelatorio() {
+  const campoNumero = document.querySelector('input[name="numero"]');
 
+  if (!campoNumero || campoNumero.value.trim() === '') {
+    alert('⚠️ Clique no botão Finalizar Relatório antes de gerar o PDF.');
+    campoNumero.focus();
+    return false;
+  }
+  return true;
+}
 
-async function gerarPDF() {
-  const ok = await garantirNumeroRelatorio();
-  if (!ok) return;
+function gerarPDF() {
+  if (!validarNumeroRelatorio()) return;
 
   const original = document.getElementById('pdf-content');
   const clone = original.cloneNode(true);
@@ -273,9 +281,7 @@ function validarNumeroRelatorio() {
 }
 
 async function compartilharPDF() {
-  const ok = await garantirNumeroRelatorio();
-  if (!ok) return;
-
+  if (!validarNumeroRelatorio()) return;
   const original = document.getElementById('pdf-content');
   const clone = original.cloneNode(true);
 
@@ -535,6 +541,7 @@ async function compartilharFotos() {
 }</script>
 </body>
 </html>
+
 
 
 
