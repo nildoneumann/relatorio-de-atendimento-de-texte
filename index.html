@@ -213,16 +213,7 @@ function getNumeroRelatorio() {
   }
 }
 
-function validarNumeroRelatorio() {
-  const campoNumero = document.querySelector('input[name="numero"]');
 
-  if (!campoNumero || campoNumero.value.trim() === '') {
-    alert('⚠️ Clique no botão Finalizar Relatório antes de gerar o PDF.');
-    campoNumero.focus();
-    return false;
-  }
-  return true;
-}
 
 async function gerarPDF() {
   const ok = await garantirNumeroRelatorio();
@@ -544,6 +535,7 @@ async function compartilharFotos() {
 }</script>
 </body>
 </html>
+
 
 
 
