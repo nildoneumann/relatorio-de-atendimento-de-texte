@@ -124,8 +124,8 @@
 </div>
 
 
-<button class="btn" onclick="limparAssinatura()" style="background-color: white">Limpar Assinatura</button>
-<button type="button" onclick="obterNumeroGlobal()">Finalizar Relatório</button>
+<button class="btn" onclick="limparAssinatura()">Limpar Assinatura</button>
+
 <button class="btn" onclick="compartilharPDF()">Compartilhar PDF</button>
 <button class="btn" onclick="gerarPDF()">Baixar PDF</button>
 
@@ -224,8 +224,9 @@ function validarNumeroRelatorio() {
   return true;
 }
 
-function gerarPDF() {
-  if (!validarNumeroRelatorio()) return;
+async function gerarPDF() {
+  const ok = await garantirNumeroRelatorio();
+  if (!ok) return;
 
   const original = document.getElementById('pdf-content');
   const clone = original.cloneNode(true);
@@ -281,7 +282,8 @@ function validarNumeroRelatorio() {
 }
 
 async function compartilharPDF() {
-  if (!validarNumeroRelatorio()) return;
+  const ok = await garantirNumeroRelatorio();
+  if (!ok) return;
 
   const original = document.getElementById('pdf-content');
   const clone = original.cloneNode(true);
@@ -481,7 +483,27 @@ async function obterNumeroGlobal() {
     if (btn) btn.disabled = false;
   }
 }
+async function garantirNumeroRelatorio() {
+  const campoNumero = document.querySelector('input[name="numero"]');
 
+  if (campoNumero.value.trim() !== '') {
+    return true; // já tem número
+  }
+
+  try {
+    await obterNumeroGlobal();
+
+    if (campoNumero.value.trim() === '') {
+      alert('Não foi possível gerar o número do relatório.');
+      return false;
+    }
+
+    return true;
+  } catch (e) {
+    alert('Erro ao gerar o número do relatório.');
+    return false;
+  }
+}
 async function compartilharFotos() {
   const input = document.getElementById('fotosOcorrencia');
   const inputNumero = document.querySelector('input[name="numero"]');
@@ -522,6 +544,7 @@ async function compartilharFotos() {
 }</script>
 </body>
 </html>
+
 
 
 
