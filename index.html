@@ -67,10 +67,10 @@
       cursor: pointer; width: 100%; }
     /* 🔹 Ajustes para fotos */
     #fotos-container {
-      margin-top: 10px;
+      margin-top: 5px;
     }
     .foto-box {
-      margin-bottom: 10px;
+      margin-bottom: 5px;
       page-break-inside: avoid; /* evita cortar foto no meio */
       break-inside: avoid;
       text-align: center;
@@ -147,14 +147,14 @@
 </div>
 
 
-<button class="btn" onclick="limparAssinatura()">Limpar Assinatura</button>
-<button class="btn" onclick="document.getElementById('fotoInput').click()">Incluir Foto</button>
+<button class="btn" onclick="limparAssinatura()" style="background-color: white">Limpar Assinatura</button>
+<button class="btn" onclick="document.getElementById('fotoInput').click()" style="background-color: white">📷 Incluir Foto no Relatório</button>
 
-<button type="button" onclick="obterNumeroGlobal()">Finalizar Relatório</button>
+<button type="button" onclick="obterNumeroGlobal()">✅ Finalizar Relatório</button>
 <button class="btn" onclick="compartilharPDF()">Compartilhar PDF</button>
 <button class="btn" onclick="gerarPDF()">Baixar PDF</button>
 
-<div style="background-color: #dbead5; margin-top: 2px; padding: 1px 10px 6px 10px; border-radius: 4px; margin-bottom: 8px">
+<div style="background-color: #dbead5; margin-top: 4px; padding: 1px 10px 6px 10px; border-radius: 4px; margin-bottom: 12px">
 <label style="font-size: 17px; margin-bottom: 1px">📸 Fotos da Ocorrência:</label>
 <input 
   type="file" 
@@ -585,6 +585,7 @@ async function compartilharFotos() {
 }</script>
 </body>
 </html>
+
 
 
 
