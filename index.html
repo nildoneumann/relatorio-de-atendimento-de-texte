@@ -227,6 +227,30 @@ function prepararAssinatura(clone) {
   }
 }
 
+
+// =============================
+// 📌 RELATÓRIO EM ANDAMENTO
+// =============================
+
+function salvarRelatorioEmAndamento(numero, ano) {
+  localStorage.setItem('relatorio_em_andamento', numero);
+  localStorage.setItem('ano_relatorio_em_andamento', ano);
+}
+
+function limparRelatorioEmAndamento() {
+  localStorage.removeItem('relatorio_em_andamento');
+  localStorage.removeItem('ano_relatorio_em_andamento');
+}
+
+function recuperarRelatorioSalvo() {
+  return {
+    numero: localStorage.getItem('relatorio_em_andamento'),
+    ano: localStorage.getItem('ano_relatorio_em_andamento')
+  };
+}
+
+
+
 function getNumeroRelatorio() {
   const numero = document.querySelector('input[name="numero"]').value.trim();
   const agora = new Date();
@@ -290,9 +314,13 @@ function gerarPDF() {
 pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },    
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   };
+
   html2pdf().set(opt).from(clone).save().then(() => {
-    document.body.removeChild(container);
-  });
+  document.body.removeChild(container);
+
+  // 🧹 Finalizou → libera o número
+  limparRelatorioEmAndamento();
+});
 }
 
 function validarNumeroRelatorio() {
@@ -368,6 +396,9 @@ async function compartilharPDF() {
   }
 
   document.body.removeChild(container);
+
+// 🧹 Finalizou → libera o número
+limparRelatorioEmAndamento();
 }
 
 if ('serviceWorker' in navigator) {
@@ -444,6 +475,28 @@ window.addEventListener('load', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  // 🔄 Verifica relatório em andamento ao abrir
+  const salvo = recuperarRelatorioSalvo();
+
+  if (salvo.numero) {
+    setTimeout(() => {
+      const continuar = confirm(
+        `Existe um relatório em andamento.\n\nDeseja retomar o nº ${salvo.numero}?`
+      );
+
+      if (continuar) {
+        const campoNumero = document.querySelector('input[name="numero"]');
+        const campoAno = document.querySelector('input[name="ano"]');
+
+        if (campoNumero) campoNumero.value = salvo.numero;
+        if (campoAno) campoAno.value = salvo.ano;
+      } else {
+        limparRelatorioEmAndamento();
+      }
+    }, 500);
+  }
+
   const agora = new Date();
 
   // ANO
@@ -470,14 +523,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+
 async function obterNumeroGlobal() {
   const btn = event?.target;
   const inputNumero = document.querySelector('input[name="numero"]');
   const inputAno = document.querySelector('input[name="ano"]');
 
-  // Evita gerar duas vezes
-  if (inputNumero.value) {
-    alert('Número já foi gerado.');
+  // 🔒 Verifica se já existe relatório salvo
+  const salvo = recuperarRelatorioSalvo();
+
+  if (salvo.numero) {
+    inputNumero.value = salvo.numero;
+    inputAno.value = salvo.ano;
+    alert('Número recuperado do relatório em andamento.');
     return;
   }
 
@@ -486,12 +544,15 @@ async function obterNumeroGlobal() {
   try {
     const response = await fetch(
       'https://script.google.com/macros/s/AKfycbykx6FemWHxHDE7xI1ZmRJzLRVqiHHdJcJywiXVq8osJofc5WMkLgJmS_e335u9RMhK/exec'
-    ); // neumandeveloper@gmail.com
+    );
 
     const data = await response.json();
 
     inputNumero.value = data.numero;
     inputAno.value = data.ano;
+
+    // 💾 SALVA LOCALMENTE
+    salvarRelatorioEmAndamento(data.numero, data.ano);
 
   } catch (err) {
     alert('Sem conexão. Número não sincronizado.');
@@ -500,27 +561,7 @@ async function obterNumeroGlobal() {
     if (btn) btn.disabled = false;
   }
 }
-async function garantirNumeroRelatorio() {
-  const campoNumero = document.querySelector('input[name="numero"]');
 
-  if (campoNumero.value.trim() !== '') {
-    return true; // já tem número
-  }
-
-  try {
-    await obterNumeroGlobal();
-
-    if (campoNumero.value.trim() === '') {
-      alert('Não foi possível gerar o número do relatório.');
-      return false;
-    }
-
-    return true;
-  } catch (e) {
-    alert('Erro ao gerar o número do relatório.');
-    return false;
-  }
-}
   /* 🔹 Script para fotos (até 3) */
 const fotoInput = document.getElementById('fotoInput');
 const fotosContainer = document.getElementById('fotos-container');
@@ -577,9 +618,12 @@ async function compartilharFotos() {
   } else {
     alert('Este navegador não suporta compartilhamento de arquivos.');
   }
-}</script>
+}
+</script>
+
 </body>
 </html>
+
 
 
 
