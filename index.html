@@ -274,84 +274,53 @@ function validarNumeroRelatorio() {
   return true;
 }
 
-function travarBotao(botao, texto = "Processando...") {
-  if (!botao) return;
-  botao.disabled = true;
-  botao.dataset.textoOriginal = botao.innerText;
-  botao.innerText = texto;
-  botao.style.opacity = "0.6";
-}
+function gerarPDF() {
+  if (!validarNumeroRelatorio()) return;
 
-function destravarBotao(botao) {
-  if (!botao) return;
-  botao.disabled = false;
-  botao.innerText = botao.dataset.textoOriginal || "OK";
-  botao.style.opacity = "1";
-}
+  const original = document.getElementById('pdf-content');
+  const clone = original.cloneNode(true);
+  const textareas = clone.querySelectorAll('textarea');
+  textareas.forEach(textarea => {
+    const div = document.createElement('div');
+    div.style.whiteSpace = 'pre-wrap';
+    div.style.border = '1px solid #ccc';
+    div.style.padding = '5px';
+    div.style.minHeight = '80px';
+    div.style.fontWeight = 'bold';
+    div.style.fontSize = '14px';
+    div.style.backgroundColor = 'white';
+    div.style.color = 'blue';
+    div.textContent = textarea.value;
+    textarea.parentNode.replaceChild(div, textarea);
+  });
+  prepararAssinatura(clone);
+  const container = document.createElement('div');
+  container.style.position = 'absolute';
+  container.style.left = '-9999px';
+  container.appendChild(clone);
+  document.body.appendChild(container);
+  
+  const opt = {
+    margin: [5, 5, 5, 5],
+    filename: getNumeroRelatorio(),
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { 
+      scale: 3,
+      useCORS: true,
+      scrollY: 0,
+      windowWidth: document.documentElement.scrollWidth,
+      windowHeight: document.documentElement.scrollHeight
+    },
+pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },    
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
 
-async function gerarPDF(event) {
+  html2pdf().set(opt).from(clone).save().then(() => {
+  document.body.removeChild(container);
 
-  const botao = event?.target;
-  travarBotao(botao, "Gerando PDF...");
-
-  try {
-
-    if (!validarNumeroRelatorio()) {
-      destravarBotao(botao);
-      return;
-    }
-
-    const original = document.getElementById('pdf-content');
-    const clone = original.cloneNode(true);
-
-    const textareas = clone.querySelectorAll('textarea');
-    textareas.forEach(textarea => {
-      const div = document.createElement('div');
-      div.style.whiteSpace = 'pre-wrap';
-      div.style.border = '1px solid #ccc';
-      div.style.padding = '5px';
-      div.style.minHeight = '80px';
-      div.style.fontWeight = 'bold';
-      div.style.fontSize = '14px';
-      div.style.backgroundColor = 'white';
-      div.style.color = 'blue';
-      div.textContent = textarea.value;
-      textarea.parentNode.replaceChild(div, textarea);
-    });
-
-    prepararAssinatura(clone);
-
-    const container = document.createElement('div');
-    container.style.position = 'absolute';
-    container.style.left = '-9999px';
-    container.appendChild(clone);
-    document.body.appendChild(container);
-
-    const opt = {
-      margin: [5, 5, 5, 5],
-      filename: getNumeroRelatorio(),
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: {
-        scale: 3,
-        useCORS: true,
-        scrollY: 0,
-        windowWidth: document.documentElement.scrollWidth,
-        windowHeight: document.documentElement.scrollHeight
-      },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    await html2pdf().set(opt).from(clone).save();
-
-    document.body.removeChild(container);
-    limparRelatorioEmAndamento();
-
-  } catch (e) {
-    console.error(e);
-  } finally {
-    destravarBotao(botao);
-  }
+  // 🧹 Finalizou → libera o número
+  limparRelatorioEmAndamento();
+});
 }
 
 function validarNumeroRelatorio() {
@@ -365,81 +334,71 @@ function validarNumeroRelatorio() {
   return true;
 }
 
-async function compartilharPDF(event) {
+async function compartilharPDF() {
+  if (!validarNumeroRelatorio()) return;
+  const original = document.getElementById('pdf-content');
+  const clone = original.cloneNode(true);
 
-  const botao = event?.target;
-  travarBotao(botao, "Compartilhando...");
+  const textareas = clone.querySelectorAll('textarea');
+  textareas.forEach(textarea => {
+    const div = document.createElement('div');
+    div.style.whiteSpace = 'pre-wrap';
+    div.style.border = '1px solid #ccc';
+    div.style.padding = '5px';
+    div.style.minHeight = '80px';
+    div.style.fontWeight = 'bold';
+    div.style.fontSize = '14px';
+    div.style.backgroundColor = 'white';
+    div.style.color = 'blue';
+    div.textContent = textarea.value;
+    textarea.parentNode.replaceChild(div, textarea);
+  });
 
-  try {
+  prepararAssinatura(clone);
 
-    if (!validarNumeroRelatorio()) {
-      destravarBotao(botao);
-      return;
-    }
+  const container = document.createElement('div');
+  container.style.position = 'absolute';
+  container.style.left = '-9999px';
+  container.appendChild(clone);
+  document.body.appendChild(container);
 
-    const original = document.getElementById('pdf-content');
-    const clone = original.cloneNode(true);
+  const opt = {
+    margin: [5, 5, 5, 5],
+    filename: getNumeroRelatorio(),
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { 
+      scale: 3,
+      useCORS: true,
+      scrollY: 0,
+      windowWidth: document.documentElement.scrollWidth,
+      windowHeight: document.documentElement.scrollHeight
+    },
+    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
 
-    const textareas = clone.querySelectorAll('textarea');
-    textareas.forEach(textarea => {
-      const div = document.createElement('div');
-      div.style.whiteSpace = 'pre-wrap';
-      div.style.border = '1px solid #ccc';
-      div.style.padding = '5px';
-      div.style.minHeight = '80px';
-      div.style.fontWeight = 'bold';
-      div.style.fontSize = '14px';
-      div.style.backgroundColor = 'white';
-      div.style.color = 'blue';
-      div.textContent = textarea.value;
-      textarea.parentNode.replaceChild(div, textarea);
-    });
+  const blob = await html2pdf().set(opt).from(clone).outputPdf('blob');
 
-    prepararAssinatura(clone);
+  const file = new File([blob], getNumeroRelatorio(), { type: 'application/pdf' });
 
-    const container = document.createElement('div');
-    container.style.position = 'absolute';
-    container.style.left = '-9999px';
-    container.appendChild(clone);
-    document.body.appendChild(container);
-
-    const opt = {
-      margin: [5, 5, 5, 5],
-      filename: getNumeroRelatorio(),
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: {
-        scale: 3,
-        useCORS: true,
-        scrollY: 0,
-        windowWidth: document.documentElement.scrollWidth,
-        windowHeight: document.documentElement.scrollHeight
-      },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-
-    const blob = await html2pdf().set(opt).from(clone).outputPdf('blob');
-
-    const file = new File([blob], getNumeroRelatorio(), { type: 'application/pdf' });
-
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try {
       await navigator.share({
         title: 'Relatório de Ocorrência',
         text: 'Confira o relatório preenchido.',
         files: [file]
       });
-    } else {
-      alert('Compartilhamento não suportado.');
+    } catch (err) {
+      alert('Compartilhamento cancelado ou falhou.');
     }
-
-    document.body.removeChild(container);
-    limparRelatorioEmAndamento();
-
-  } catch (e) {
-    console.error(e);
-  } finally {
-    destravarBotao(botao);
+  } else {
+    alert('Compartilhamento de arquivos não suportado neste navegador.');
   }
+
+  document.body.removeChild(container);
+
+// 🧹 Finalizou → libera o número
+limparRelatorioEmAndamento();
 }
 
 if ('serviceWorker' in navigator) {
@@ -661,10 +620,9 @@ async function compartilharFotos() {
   }
 }
 </script>
-
-
 </body>
 </html>
+
 
 
 
