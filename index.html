@@ -151,10 +151,10 @@
 <button class="btn" onclick="limparAssinatura()" style="background-color: white; color: #15400e; margin-top: 5px">Limpar Assinaturas</button>
 <button class="btn" onclick="document.getElementById('fotoInput').click()" style="background-color: white; color: #15400e; margin-top: 2px">📸 Incluir Fotos no Relatório</button>
 </div>
-<button type="button" onclick="obterNumeroGlobal(event); this.style.backgroundColor='#D6FFFF'; this.style.color='white';" style="border: 3px solid #15400e">✅ Finalizar Relatório</button>
-<button class="btn" onclick="compartilharPDF(event)">Compartilhar PDF</button>
-<button class="btn" onclick="gerarPDF()">Baixar PDF</button>
-
+<button type="button" onclick="obterNumeroGlobal(); this.style.backgroundColor='#D6FFFF'; this.style.color='#c0c0c0'; this.innerHTML='✅Relatório Finalizado!';" style="border: 3px solid #15400e">Finalizar Relatório</button>
+<button class="btn" onclick="compartilharPDF(); this.style.backgroundColor='#D6FFFF'; this.style.color='#c0c0c0'; this.innerHTML='✅PDF Compartilhado!';">Compartilhar PDF</button>
+<button class="btn" onclick="gerarPDF(); this.style.backgroundColor='#D6FFFF'; this.style.color='#c0c0c0'; this.innerHTML='✅PDF Baixado!';">Baixar PDF</button>
+  
 <div style="background-color: #dbead5; margin-top: 4px; padding: 1px 10px 6px 10px; border-radius: 4px; margin-bottom: 12px">
 <label style="font-size: 17px; margin-bottom: 1px">📸 Fotos da Ocorrência:</label>
 <input 
@@ -665,6 +665,7 @@ async function compartilharFotos() {
 
 </body>
 </html>
+
 
 
 
