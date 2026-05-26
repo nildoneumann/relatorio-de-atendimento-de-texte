@@ -441,3 +441,44 @@ async function compartilharFotos() {
     alert('Este navegador não suporta compartilhamento de arquivos.');
   }
 }
+
+// Bloquear clique direito
+document.addEventListener('contextmenu', e => {
+  e.preventDefault();
+});
+
+// Bloquear atalhos DevTools
+document.addEventListener('keydown', e => {
+
+  if (
+    e.key === 'F12' ||
+
+    (e.ctrlKey && e.shiftKey &&
+      ['I', 'J', 'C'].includes(e.key)) ||
+
+    (e.ctrlKey && e.key === 'u')
+  ) {
+    e.preventDefault();
+  }
+});
+
+// Detectar DevTools
+setInterval(() => {
+
+  const largura =
+    window.outerWidth - window.innerWidth > 160;
+
+  const altura =
+    window.outerHeight - window.innerHeight > 160;
+
+  if (largura || altura) {
+
+    document.body.innerHTML = `
+      <h1 style="color:red;text-align:center">
+        Acesso bloqueado
+      </h1>
+    `;
+
+  }
+
+}, 1000);
