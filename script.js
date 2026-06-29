@@ -113,8 +113,8 @@ function gerarPDF() {
     div.style.border = '1px solid #ccc';
     div.style.padding = '5px';
     div.style.minHeight = '45px';
-    
-    div.style.fontSize = '12px';
+    div.style.textTransform = 'none';
+    div.style.fontSize = '13px';
     div.style.backgroundColor = 'white';
     div.style.color = 'darkblue';
     div.textContent = textarea.value;
@@ -160,8 +160,8 @@ async function compartilharPDF() {
     div.style.border = '1px solid #ccc';
     div.style.padding = '5px';
     div.style.minHeight = '45px';
-    
-    div.style.fontSize = '12px';
+    div.style.textTransform = 'none';
+    div.style.fontSize = '13px';
     div.style.backgroundColor = 'white';
     div.style.color = 'darkblue';
     div.textContent = textarea.value;
