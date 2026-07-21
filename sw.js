@@ -12,7 +12,7 @@ const ASSETS = [
 // INSTALAÇÃO
 self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE).then(cache => {
+    caches.open(CACHE_NAME).then(cache => {
       return cache.addAll(ASSETS);
     })
   );
@@ -27,7 +27,7 @@ self.addEventListener("activate", event => {
     caches.keys().then(keys => {
       return Promise.all(
         keys.map(key => {
-          if (key !== CACHE) {
+          if (key !== CACHE_NAME) {
             return caches.delete(key);
           }
         })
